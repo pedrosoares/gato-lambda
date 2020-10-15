@@ -3,6 +3,8 @@ name = "gato-lambda"
 version = "0.5.0"
 authors = ["Pedro Soares <contato@pedrosoares.net>"]
 edition = "2018"
+description = "AWS Lambda driver to work with API-Gateway for Gato Web Framework "
+license = "MIT"
 
 [dependencies]
 gato-core = "0.5"
