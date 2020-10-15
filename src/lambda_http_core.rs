@@ -23,8 +23,7 @@ impl HttpCore for LambdaHttpCore {
             let response = router_handler.handle(&mut request);
             // Send to Lambda
             let body = json!({
-                "statusCode": response.get_code(),githu
-
+                "statusCode": response.get_code(),
                 "body": response.get_body(),
                 "headers": response.get_headers()
             });
