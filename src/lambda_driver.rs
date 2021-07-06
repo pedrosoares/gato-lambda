@@ -3,6 +3,7 @@ use curl::easy::Easy;
 use std::collections::HashMap;
 use std::io::Read;
 use serde_json::Value;
+use gato_core::kernel::Logger;
 
 pub struct LambdaDriver {
     headers: HashMap<String, String>,
@@ -45,7 +46,14 @@ impl LambdaDriver {
                 }
                 return true;
             }).unwrap();
-            transfer.perform().unwrap();
+            match transfer.perform() {
+                Ok(_) => {
+                    Logger::info(format!("[lambda] request config success").as_str());
+                },
+                Err(error) => {
+                    Logger::error(format!("[lambda] error requesting lambda {}", error).as_str());
+                }
+            }
         }
         self.body_raw = format!("{}", str::from_utf8(&data).unwrap_or("")).as_str().to_string();
         self.body = serde_json::from_str(self.body_raw.as_str()).unwrap_or(Value::Null);
@@ -103,6 +111,13 @@ impl LambdaDriver {
         transfer.read_function(|buf| {
             Ok(payload.read(buf).unwrap_or(0))
         }).unwrap();
-        transfer.perform().unwrap();
+        match transfer.perform() {
+            Ok(_) => {
+                Logger::info(format!("[lambda] response sent success").as_str());
+            },
+            Err(error) => {
+                Logger::error(format!("[lambda] error sending response {}", error).as_str());
+            }
+        }
     }
 }
